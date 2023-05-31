@@ -1,9 +1,13 @@
 <?php
+
+use App\Models\Category;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
+use App\Models\User;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use Illuminate\support\Facades\File;
+use PhpParser\Builder\Function_;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +21,13 @@ use Illuminate\support\Facades\File;
 */
 
 Route::get('/', function () {
+
+//     \Illuminate\Support\Facades\DB::listen(Function($query)
+//     {
+// // \iluminate\support\Facades\Log::info('foo');
+// Logger($query->sql);
+
+    // });
 
 // $files = File::files(resource_path("posts"));// fetch all files from posts directory
 
@@ -61,21 +72,36 @@ Route::get('/', function () {
 
 
     return view('posts' , [
-        'posts' =>Post::all()
+        'posts' =>Post::latest()->get()
     ]);
 });
-Route::get('posts/{post}',function($slug){
+Route::get('posts/{post:slug}',function(Post $post){
     // return $slug;
 // Find a post by it slug and pass it to a view called post 
 return view('post',[
-'post' =>  Post::findOrFail($slug)]);
-})->where('post','[A-z_\-.]+');
+'post' => $post]);
+});
+// ->where('post','[A-z_\-.]+')
 
 
 
+Route::get('categories/{category:slug}',function(Category $category)
+{
+
+    return view('posts' , [
+        'posts' =>$category ->posts
+    ]);
+});
+// ->load(['category','auther'])
 
 
-
+Route::get('authers/{auther:username}',function(User $auther)
+{
+// ddd($auther);
+    return view('posts' , [
+        'posts' =>$auther->posts
+    ]);
+});
 
 
 
