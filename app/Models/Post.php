@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
     protected $guarded = [''];
-protected $with = ['category','auther']; // default for every post query yoy perform 
+protected $with = ['category','auther']; // default for every post query you perform 
 
 
     public function Category()
