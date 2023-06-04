@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Route;
@@ -20,75 +21,8 @@ use PhpParser\Builder\Function_;
 |
 */
 
-Route::get('/', function () {
-
-    // dd(request('search'));
-    $posts = Post::latest();
-    if(request('search')){
-        $posts->where('title' , 'like','%'.request('search').'%')
-        ->orWhere('body' , 'like','%'.request('search').'%');
-
-    }
-//     \Illuminate\Support\Facades\DB::listen(Function($query)
-//     {
-// // \iluminate\support\Facades\Log::info('foo');
-// Logger($query->sql);
-
-    // });
-
-// $files = File::files(resource_path("posts"));// fetch all files from posts directory
-
-#simple PHP 
-
-// $posts=[];
-// foreach($files as $file){
-//     $document = YamlFrontMatter::parseFile($file);
-    
-//     // ddd($document);
-//     $posts []= new Post(
-
-//         $document->title,
-//         $document->date,
-//         $document->excerpt,
-//         $document->body(),
-//         $document->slug
-//     );
- 
-// //  ddd($document);
-// }
-
-
-#Using array_map
-
-// $posts= array_map(function($file){
-//     $document = YamlFrontMatter::parseFile($file);
-
-// return  new Post(
-
-//     $document->title,
-//     $document->date,
-//     $document->excerpt,
-//     $document->body(),
-//     $document->slug
-// );
-
-
-// },$files);
-
-#Using collection 
-
-
-    return view('posts' , [
-        'posts' =>$posts->get(),
-        'categories'=>Category::all()
-    ]);
-});
-Route::get('posts/{post:slug}',function(Post $post){
-    // return $slug;
-// Find a post by it slug and pass it to a view called post 
-return view('post',[
-'post' => $post]);
-});
+Route::get('/',[PostController::class,'index']);
+Route::get('posts/{post:slug}',[PostController::class,'show']);
 // ->where('post','[A-z_\-.]+')
 
 
