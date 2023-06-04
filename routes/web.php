@@ -22,6 +22,13 @@ use PhpParser\Builder\Function_;
 
 Route::get('/', function () {
 
+    // dd(request('search'));
+    $posts = Post::latest();
+    if(request('search')){
+        $posts->where('title' , 'like','%'.request('search').'%')
+        ->orWhere('body' , 'like','%'.request('search').'%');
+
+    }
 //     \Illuminate\Support\Facades\DB::listen(Function($query)
 //     {
 // // \iluminate\support\Facades\Log::info('foo');
@@ -72,10 +79,11 @@ Route::get('/', function () {
 
 
     return view('posts' , [
-        'posts' =>Post::latest()->get()
+        'posts' =>$posts->get(),
+        'categories'=>Category::all()
     ]);
 });
-Route::get('/posts/{post:slug}',function(Post $post){
+Route::get('posts/{post:slug}',function(Post $post){
     // return $slug;
 // Find a post by it slug and pass it to a view called post 
 return view('post',[
@@ -89,7 +97,10 @@ Route::get('categories/{category:slug}',function(Category $category)
 {
 
     return view('posts' , [
-        'posts' =>$category ->posts
+        'posts' =>$category ->posts,
+        'categories'=>Category::all(),
+        'currentCategory'=>$category
+
     ]);
 });
 // ->load(['category','auther'])
@@ -99,7 +110,9 @@ Route::get('authers/{auther:username}',function(User $auther)
 {
 // ddd($auther);
     return view('posts' , [
-        'posts' =>$auther->posts
+        'posts' =>$auther->posts,
+        'categories'=>Category::all()
+
     ]);
 });
 
